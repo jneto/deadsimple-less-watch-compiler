@@ -138,11 +138,27 @@ define(function (require) {
         dirname = path.dirname(filePath);
       }
       var filename = parsedPath.name;
+      var ext = '';
+
+      var isCSSModule = lessWatchCompilerUtilsModule.config.CSSModule;
+      if (isCSSModule) {
+        var CSSModuleIgnoredFiles = lessWatchCompilerUtilsModule.config.CSSModuleIgnore;
+        if (CSSModuleIgnoredFiles && !CSSModuleIgnoredFiles.includes(parsedPath.base)) {
+          ext += '.module';
+        }
+      }
+
+      var isMinified = lessWatchCompilerUtilsModule.config.minified;
+      if (isMinified) {
+        ext += '.min';
+      }
+
+      ext += '.css';
 
       var formatted = path.format({
         dir: dirname,
         name: filename,
-        ext: (lessWatchCompilerUtilsModule.config.minified ? '.min' : '') + '.css',
+        ext: ext,
       });
 
       // No matter the path of the main file, the output must always land in the output folder
